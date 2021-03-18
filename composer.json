@@ -22,7 +22,9 @@
         "laravel/sail": "^1.4",
         "mockery/mockery": "^1.4.2",
         "nunomaduro/collision": "^5.0",
-        "phpunit/phpunit": "^9.3.3"
+        "phpunit/phpunit": "^9.3.3",
+        "psalm/plugin-laravel": "^1.4",
+        "vimeo/psalm": "^4.6"
     },
     "config": {
         "optimize-autoloader": true,
@@ -61,6 +63,12 @@
         ],
         "format": [
             "vendor/bin/php-cs-fixer fix"
+        ],
+        "psalm": [
+            "./vendor/bin/psalm"
+        ],
+        "psalm_info": [
+            "./vendor/bin/psalm --show-info=true"
         ]
     }
 }

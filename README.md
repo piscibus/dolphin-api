@@ -16,5 +16,13 @@ We are using PHP-CS-Fixer to auto format our code. To format your code run:
 composer format
 ```
 
+## Static code analysis 
+We're using [Psalm](https://github.com/vimeo/psalm) for  a static analysis tool for finding errors in PHP.
+
+To analyze your code run:
+```
+composer psalm
+```
+
 ## License
 The Dolphin software is open-sourced software licensed under the [LICENSE_NAME license](#).
