@@ -24,4 +24,12 @@ abstract class Request extends FormRequest
      * @return array
      */
     abstract public function rules(): array;
+
+    /**
+     * @param array $items
+     */
+    public function setInclude(array $items): void
+    {
+        $this->merge(['include' => $items]);
+    }
 }
