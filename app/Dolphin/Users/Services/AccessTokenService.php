@@ -4,7 +4,6 @@
 namespace App\Dolphin\Users\Services;
 
 use App\Dolphin\Passport\AccessTokenResult;
-use App\Dolphin\Passport\Repositories\ClientRepository;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
@@ -18,19 +17,12 @@ class AccessTokenService
     private $request;
 
     /**
-     * @var ClientRepository
-     */
-    private $clients;
-
-    /**
      * AccessTokenService constructor.
-     * @param Request $request
-     * @param ClientRepository $clients
+     * @param  Request  $request
      */
-    public function __construct(Request $request, ClientRepository $clients)
+    public function __construct(Request $request)
     {
         $this->request = $request;
-        $this->clients = $clients;
         $this->prepareRequest();
     }
 
@@ -54,11 +46,8 @@ class AccessTokenService
      */
     protected function prepareRequest(): void
     {
-        $client = $this->clients->findPasswordClient();
         $this->request->merge([
             'grant_type' => 'password',
-            'client_id' => $client->id,
-            'client_secret' => $client->secret,
             'username' => $this->request->get('email'),
             'scope' => '',
         ]);

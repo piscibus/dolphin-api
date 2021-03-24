@@ -32,6 +32,8 @@ class LoginRequest extends Request
         return [
             'email' => ['required', 'email', 'exists:users,email'],
             'password' => ['required', new PasswordRule()],
+            'client_id' => ['required', 'exists:oauth_clients,id'],
+            'client_secret' => ['required']
         ];
     }
 

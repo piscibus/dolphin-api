@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Dolphin\Passport\Repositories\ClientRepository;
 use Faker\Factory;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
@@ -24,11 +25,14 @@ class RegistrationTest extends TestCase
 
         $faker = Factory::create();
         $email = $faker->email;
+        $client = (new ClientRepository())->findPasswordClient();
 
         $data = [
             'email' => $email,
             'password' => $faker->password,
             'name' => $faker->name,
+            'client_id' => $client->id,
+            'client_secret' => $client->secret,
         ];
 
         $response = $this->postJson(route('emailRegistration'), $data);

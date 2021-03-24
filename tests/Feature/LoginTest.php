@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Dolphin\Passport\Repositories\ClientRepository;
 use App\Dolphin\Users\Models\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
@@ -21,11 +22,14 @@ class LoginTest extends TestCase
 
         /** @var User $user */
         $user = User::factory()->create();
+        $client = (new ClientRepository())->findPasswordClient();
 
         $url = route('emailLogin');
         $response = $this->postJson($url, [
             'email' => $user->getEmail(),
             'password' => 'password',
+            'client_id' => $client->id,
+            'client_secret' => $client->secret,
         ]);
 
         $response->assertStatus(200);

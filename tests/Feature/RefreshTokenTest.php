@@ -20,17 +20,19 @@ class RefreshTokenTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $this->passportInstall();
+        $client = (new ClientRepository())->findPasswordClient();
 
         /** @var User $user */
         $user = User::factory()->create();
         $loginResponse = $this->postJson(route('emailLogin'), [
             'email' => $user->getEmail(),
-            'password' => 'password'
+            'password' => 'password',
+            'client_id' => $client->id,
+            'client_secret' => $client->secret,
         ])->decodeResponseJson();
         $token = $loginResponse['data']['token'];
         $refreshToken = $token['refresh_token'];
 
-        $client = (new ClientRepository())->findPasswordClient();
         $uri = route('refreshToken');
         $data = [
             'grant_type' => 'refresh_token',

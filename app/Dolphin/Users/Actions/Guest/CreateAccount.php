@@ -26,19 +26,19 @@ class CreateAccount implements Action
     /**
      * @var AccessTokenService
      */
-    private $acessTokenService;
+    private $accessTokenService;
 
     /**
      * CreateAccount constructor.
-     * @param CreateAccountRequest $request
-     * @param User $user
-     * @param AccessTokenService $accessTokenService
+     * @param  CreateAccountRequest  $request
+     * @param  User  $user
+     * @param  AccessTokenService  $accessTokenService
      */
     public function __construct(CreateAccountRequest $request, User $user, AccessTokenService $accessTokenService)
     {
         $this->request = $request;
         $this->user = $user;
-        $this->acessTokenService = $accessTokenService;
+        $this->accessTokenService = $accessTokenService;
     }
 
     /**
@@ -56,6 +56,6 @@ class CreateAccount implements Action
 
         $this->user->save();
 
-        return new UserResource($this->user, $this->acessTokenService);
+        return new UserResource($this->user, $this->accessTokenService);
     }
 }
