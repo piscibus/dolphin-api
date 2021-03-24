@@ -21,10 +21,12 @@ use Laravel\Passport\PersonalAccessTokenResult;
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
     /**
-     * @param string $email
+     * @param  string  $email
      * @return User
      */
     public function setEmail(string $email): User
@@ -34,7 +36,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @param string $password
+     * @param  string  $password
      * @return User
      */
     public function setPassword(string $password): User
@@ -44,7 +46,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @param string $name
+     * @param  string  $name
      * @return User
      */
     public function setName(string $name): User
