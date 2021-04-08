@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Dolphin\Passport\Repositories\ClientRepository;
 use Faker\Factory;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 /**
@@ -14,6 +15,7 @@ use Tests\TestCase;
 class RegistrationTest extends TestCase
 {
     use DatabaseMigrations;
+    use WithFaker;
 
     /**
      * @test
@@ -45,5 +47,27 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('users', compact('email'));
+    }
+
+    /**
+     * @test
+     */
+    public function test_registration_fails_on_using_invalid_client_credentials()
+    {
+        $this->passportInstall();
+
+        $email = $this->faker->email;
+        $data = [
+            'email' => $email,
+            'password' => $this->faker->password,
+            'name' => $this->faker->name,
+            'client_id' => 1,
+            'client_secret' => $this->faker->password,
+        ];
+
+        $response = $this->postJson(route('emailRegistration'), $data);
+        $response->assertStatus(422);
+
+        $this->assertDatabaseMissing('users', ['email' => $email]);
     }
 }

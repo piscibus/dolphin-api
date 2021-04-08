@@ -4,6 +4,7 @@
 namespace App\Dolphin\Users\Requests;
 
 use App\Dolphin\Http\Request;
+use App\Dolphin\Users\Rules\AuthClientRule;
 use App\Dolphin\Users\Rules\PasswordRule;
 
 /**
@@ -29,10 +30,13 @@ class CreateAccountRequest extends Request
      */
     public function rules(): array
     {
+        $clientSecret = $this->getClientSecret();
+        $clientId = $this->getClientId();
+
         return [
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', new PasswordRule()],
-            'client_id' => ['required', 'exists:oauth_clients,id'],
+            'client_id' => ['required', AuthClientRule::id($clientId)->secret($clientSecret)],
             'client_secret' => ['required']
         ];
     }
@@ -59,5 +63,21 @@ class CreateAccountRequest extends Request
     public function InputPassword(): string
     {
         return $this->get('password');
+    }
+
+    /**
+     * @return string
+     */
+    private function getClientSecret(): string
+    {
+        return $this->get('client_secret');
+    }
+
+    /**
+     * @return int
+     */
+    private function getClientId(): int
+    {
+        return $this->get('client_id');
     }
 }
