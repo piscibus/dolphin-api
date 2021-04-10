@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Laravel\Passport\Passport;
+use Laravel\Passport\RouteRegistrar;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -19,11 +21,17 @@ class AuthServiceProvider extends ServiceProvider
      * Register any authentication / authorization services.
      *
      * @return void
+     * @psalm-suppress UndefinedInterfaceMethod
      */
     public function boot()
     {
         $this->registerPolicies();
 
-        //
+        if (!$this->app->routesAreCached()) {
+            Passport::routes(function (RouteRegistrar $router) {
+                $router->forAccessTokens();
+                $router->forTransientTokens();
+            });
+        }
     }
 }
