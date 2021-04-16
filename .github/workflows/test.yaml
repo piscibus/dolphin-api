@@ -15,7 +15,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [ ubuntu-latest ] # May be extended by adding `windows-latest`
-        php: [ 7.4, 8.1 ]
+        php: [ 7.4 ]
         stability: [ prefer-lowest, prefer-stable ]
 
     name: P${{ matrix.php }} - ${{ matrix.os }}
