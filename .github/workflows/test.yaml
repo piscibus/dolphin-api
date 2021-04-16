@@ -47,5 +47,3 @@ jobs:
 
       - name: Execute tests
         run: php artisan test
-        env:
-          APP_ENV: testing
