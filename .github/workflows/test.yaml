@@ -40,6 +40,12 @@ jobs:
         run: |
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
-      - name: Execute tests
+      - name: Prepare Laravel Application
         run: |
-          php artisan test
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Execute tests
+        run: ./vendor/bin/phpunit
+        env:
+          APP_ENV: testing
