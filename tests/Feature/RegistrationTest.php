@@ -32,7 +32,6 @@ class RegistrationTest extends TestCase
         $data = [
             'email' => $email,
             'password' => $faker->password,
-            'name' => $faker->name,
             'client_id' => $client->id,
             'client_secret' => $client->secret,
         ];

@@ -6,6 +6,7 @@ namespace App\Dolphin\Users\Requests;
 use App\Dolphin\Http\Request;
 use App\Dolphin\Users\Rules\AuthClientRule;
 use App\Dolphin\Users\Rules\PasswordRule;
+use Illuminate\Support\Str;
 
 /**
  * Class CreateAccountRequest
@@ -54,7 +55,7 @@ class CreateAccountRequest extends Request
      */
     public function getName(): string
     {
-        return $this->get('email');
+        return $this->get('name') ?? $this->generateNameFromEmail();
     }
 
     /**
@@ -79,5 +80,13 @@ class CreateAccountRequest extends Request
     private function getClientId(): int
     {
         return $this->get('client_id');
+    }
+
+    /**
+     * @return string
+     */
+    private function generateNameFromEmail(): string
+    {
+        return (string) Str::of($this->getEmail())->before('@');
     }
 }
