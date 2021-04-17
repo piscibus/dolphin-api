@@ -28,6 +28,16 @@ class LogoutRequest extends Request
      */
     public function rules(): array
     {
-        return [];
+        return [
+            'other_devices' => ['in:true,false'],
+        ];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFromOtherDevices(): bool
+    {
+        return $this->has('other_devices') && $this->get('other_devices') === 'true';
     }
 }
