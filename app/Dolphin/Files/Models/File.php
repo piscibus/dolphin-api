@@ -2,17 +2,21 @@
 
 namespace App\Dolphin\Files\Models;
 
+use App\Dolphin\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 /**
  * @method static File create(array $attributes)
+ * @property string $id
  * @property string $path
  * @property string $disk
  * @property string $meta_data
  */
 class File extends Model
 {
+    use HasUuid;
+
     /**
      * @var string
      */
@@ -29,6 +33,14 @@ class File extends Model
     public function setMetaDataAttribute(array $value): void
     {
         $this->attributes['meta_data'] = json_encode($value);
+    }
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
     }
 
     /**

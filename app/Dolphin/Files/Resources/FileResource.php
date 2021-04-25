@@ -22,6 +22,7 @@ class FileResource extends Resource
     protected function handle($request): array
     {
         return [
+            'id' => $this->getId(),
             'path' => $this->getPath(),
             'url' => $this->getUrl(),
             'meta_data' => $this->getMetaData(),

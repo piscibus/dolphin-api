@@ -33,9 +33,10 @@ class UploadFileTest extends TestCase
         Passport::actingAs($user);
 
         $disk = config('filesystems.default');
+        Storage::fake($disk);
+
         $width = 15;
         $height = 15;
-        Storage::fake($disk);
         $file = UploadedFile::fake()->image('avatar.jpg', $width, $height);
 
         $data = [
@@ -52,7 +53,7 @@ class UploadFileTest extends TestCase
         $response->assertJsonPath('data.path', $filePath);
         $response->assertJsonPath('data.meta_data.width', $width);
         $response->assertJsonPath('data.meta_data.height', $height);
-        $response->assertJsonStructure(['data' => ['path', 'url', 'meta_data' => ['width', 'height']]]);
+        $response->assertJsonStructure(['data' => ['id', 'path', 'url', 'meta_data' => ['width', 'height']]]);
 
         /** @psalm-suppress UndefinedInterfaceMethod */
         Storage::disk($disk)->assertExists($filePath);
