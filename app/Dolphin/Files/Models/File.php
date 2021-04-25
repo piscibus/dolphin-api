@@ -17,6 +17,8 @@ class File extends Model
 {
     use HasUuid;
 
+    public const DEV_AVATAR_ASSET = '/images/avatar.png';
+
     /**
      * @var string
      */
@@ -65,8 +67,11 @@ class File extends Model
      */
     public function getUrl(): string
     {
-        $disk = Storage::disk($this->disk);
-        return $disk->url($this->getPath());
+        if ($this->shouldGetUrl()) {
+            $disk = Storage::disk($this->disk);
+            return $disk->url($this->getPath());
+        }
+        return asset(self::DEV_AVATAR_ASSET);
     }
 
     /**
@@ -75,5 +80,24 @@ class File extends Model
     public function getMetaData(): array
     {
         return json_decode($this->meta_data, true);
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldGetUrl(): bool
+    {
+        $environment = config('app.env');
+        return $environment === 'production' || $environment === 'staging';
+    }
+
+    /**
+     * @param  string  $path
+     * @return $this
+     */
+    public function setPath(string $path): self
+    {
+        $this->path = $path;
+        return $this;
     }
 }
