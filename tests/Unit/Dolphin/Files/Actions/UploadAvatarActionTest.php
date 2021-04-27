@@ -25,7 +25,7 @@ class UploadAvatarActionTest extends TestCase
         $user = User::factory()->create();
 
         $request = new StoreFileRequest([], [], [], [], ['file' => UploadedFile::fake()->image('avatar.jpg')]);
-        $request->setUserResolver(fn() => $user);
+        $request->setUserResolver(fn () => $user);
 
         $file = new File();
         $files = new FileRepository($file);
