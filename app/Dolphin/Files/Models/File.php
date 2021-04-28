@@ -3,6 +3,8 @@
 namespace App\Dolphin\Files\Models;
 
 use App\Dolphin\Traits\HasUuid;
+use Database\Factories\FileFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -16,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
 class File extends Model
 {
     use HasUuid;
+    use HasFactory;
 
     public const DEV_AVATAR_ASSET = '/images/avatar.png';
 
@@ -99,5 +102,13 @@ class File extends Model
     {
         $this->path = $path;
         return $this;
+    }
+
+    /**
+     * @return FileFactory
+     */
+    protected static function newFactory(): FileFactory
+    {
+        return FileFactory::new();
     }
 }
