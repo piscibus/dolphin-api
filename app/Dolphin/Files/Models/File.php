@@ -21,6 +21,10 @@ class File extends Model
     use HasFactory;
 
     public const DEV_AVATAR_ASSET = '/images/avatar.png';
+    public const DEV_AVATAR_DIMENSION = 500;
+    public const DEV_AVATAR_MIME_TYPE = 'image/png';
+    public const DEV_AVATAR_EXTENSION = 'png';
+    public const DEV_DISK = 'local';
 
     /**
      * @var string

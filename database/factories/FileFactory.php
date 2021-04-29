@@ -33,11 +33,11 @@ class FileFactory extends Factory
     public function avatar(): FileFactory
     {
         return $this->state(fn () => [
-            'path' => '/images/avatar.png',
-            'meta_data' => ['width' => 512, 'height' => 512],
-            'mime_type' => 'image/png',
-            'extension' => 'png',
-            'disk' => 'fake_disk'
+            'path' => File::DEV_AVATAR_ASSET,
+            'meta_data' => ['width' => File::DEV_AVATAR_DIMENSION, 'height' => File::DEV_AVATAR_DIMENSION],
+            'mime_type' => File::DEV_AVATAR_MIME_TYPE,
+            'extension' => File::DEV_AVATAR_EXTENSION,
+            'disk' => File::DEV_DISK,
         ]);
     }
 }
