@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
  * @property string $id
  * @property string $path
  * @property string $disk
- * @property string $meta_data
+ * @property array $meta_data
  */
 class File extends Model
 {
@@ -21,7 +21,7 @@ class File extends Model
     use HasFactory;
 
     public const DEV_AVATAR_ASSET = '/images/avatar.png';
-    public const DEV_AVATAR_DIMENSION = 500;
+    public const DEV_AVATAR_DIMENSION = 512;
     public const DEV_AVATAR_MIME_TYPE = 'image/png';
     public const DEV_AVATAR_EXTENSION = 'png';
     public const DEV_DISK = 'local';
@@ -42,6 +42,17 @@ class File extends Model
     public function setMetaDataAttribute(array $value): void
     {
         $this->attributes['meta_data'] = json_encode($value);
+    }
+
+    /**
+     * @param  string  $value
+     * @return array
+     */
+    public function getMetaDataAttribute(string $value): array
+    {
+        $metaData = json_decode($value, true);
+        $metaData['url'] = $this->getUrl();
+        return $metaData;
     }
 
     /**
@@ -86,7 +97,7 @@ class File extends Model
      */
     public function getMetaData(): array
     {
-        return json_decode($this->meta_data, true);
+        return $this->meta_data;
     }
 
     /**

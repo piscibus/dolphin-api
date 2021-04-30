@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\EmailLoginController;
 use App\Http\Controllers\Api\FileController;
+use App\Http\Controllers\Api\MyProfileController;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
@@ -19,4 +20,5 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->group(function (Router $router) {
     $router->any('/logout', [EmailLoginController::class, 'destroy'])->name('logout');
     $router->post('/files', [FileController::class, 'store'])->name('files.store');
+    $router->get('/profile', MyProfileController::class)->name('myProfile');
 });
