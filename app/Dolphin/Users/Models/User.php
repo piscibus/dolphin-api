@@ -6,6 +6,7 @@ namespace App\Dolphin\Users\Models;
 //use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -14,10 +15,10 @@ use Laravel\Passport\PersonalAccessTokenResult;
 /**
  * Class User
  * @package App\Dolphin\Users\Models
- * @property string $id
+ * @property int $id
  * @property string $email
  * @property string $password
- * @property string $name
+ * @property Profile $profile
  */
 class User extends Authenticatable
 {
@@ -46,29 +47,11 @@ class User extends Authenticatable
     }
 
     /**
-     * @param  string  $name
-     * @return User
-     */
-    public function setName(string $name): User
-    {
-        $this->name = $name;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getEmail(): string
     {
         return $this->email;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
     }
 
     /**
@@ -81,9 +64,9 @@ class User extends Authenticatable
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getId(): string
+    public function getId(): int
     {
         return $this->id;
     }
@@ -94,5 +77,29 @@ class User extends Authenticatable
     protected static function newFactory(): UserFactory
     {
         return UserFactory::new();
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function profile(): HasOne
+    {
+        return $this->hasOne(Profile::class)->with('avatar');
+    }
+
+    /**
+     * @return Profile|null
+     */
+    public function getProfile(): ?Profile
+    {
+        return $this->profile;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->profile->getName();
     }
 }
