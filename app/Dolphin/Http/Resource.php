@@ -13,6 +13,11 @@ use Illuminate\Support\Str;
 abstract class Resource extends JsonResource
 {
     /**
+     * @var Collection|null
+     */
+    protected ?Collection $includes = null;
+
+    /**
      * List of included data
      *
      * @var array
@@ -20,22 +25,12 @@ abstract class Resource extends JsonResource
     protected array $availableIncludes = [];
 
     /**
-     * @var Collection
+     * @var array
      */
-    protected Collection $qualifiedIncludes;
+    protected array $defaultIncludes = [];
 
     /**
-     * Resource constructor.
-     * @param $resource
-     */
-    public function __construct($resource)
-    {
-        parent::__construct($resource);
-        $this->qualifiedIncludes = new Collection();
-    }
-
-    /**
-     * @param  array  $availableIncludes
+     * @param array $availableIncludes
      * @return self
      */
     public function setAvailableIncludes(array $availableIncludes): self
@@ -45,48 +40,28 @@ abstract class Resource extends JsonResource
     }
 
     /**
-     * @return Collection
+     * @param array $defaultIncludes
+     * @return self
      */
-    public function getQualifiedIncludes(): Collection
+    public function setDefaultIncludes(array $defaultIncludes): self
     {
-        return $this->qualifiedIncludes;
-    }
-
-    /**
-     * @param $item
-     * @param  array  $data
-     * @param $request
-     * @return array
-     */
-    protected function fetchIncludes($item, array $data, $request): array
-    {
-        if (!in_array($item, $this->availableIncludes)) {
-            return $data;
-        }
-
-        $camelCase = (string) Str::of($item)->camel();
-        $method = sprintf('include%s', ucfirst($camelCase));
-        /** @var Resource $resource */
-        $resource = $this->$method($this->resource);
-        $data[$item] = $resource->toArray($request);
-        return $data;
+        $this->defaultIncludes = $defaultIncludes;
+        return $this;
     }
 
     /**
      * Transform the resource into an array.
      *
-     * @param  mixed  $request
+     * @param mixed $request
      * @return array
      */
     public function toArray($request): array
     {
         $data = $this->handle($request);
-        $includes = $this->parseIncludes($request);
-
-        if ($includes->count()) {
-            $data = $this->appendIncludes($includes, $data, $request);
+        $includes = $this->validateIncludes($request)->merge($this->defaultIncludes);
+        foreach ($includes as $item) {
+            $data[$item] = $this->fetchIncludeAble($item);
         }
-
         return $data;
     }
 
@@ -99,64 +74,69 @@ abstract class Resource extends JsonResource
     abstract protected function handle($request): array;
 
     /**
-     * @param  Request  $request
+     * @param Request $request
      * @return Collection
      */
-    public function parseIncludes(Request $request): Collection
+    public function validateIncludes(Request $request): Collection
     {
-        $includes = Str::of((string) $request->get('includes'))->explode(',');
-        return $includes->map(fn (string $item) => trim($item));
+        $includes = $this->parseIncludes($request);
+        foreach ($includes as $item) {
+            $this->validator($item);
+        }
+        return $includes;
     }
 
     /**
-     * @param  Collection  $includes
-     * @param  array  $data
-     * @param  Request  $request
+     * @param Request $request
+     * @return Collection
+     */
+    protected function parseIncludes(Request $request): Collection
+    {
+        if ($this->hasIncludes($request)) {
+            $includes = Str::of((string)$request->get('includes'))->explode(',');
+            $this->includes = $includes->map(fn (string $item) => trim($item));
+        }
+        return $this->includes ?? new Collection();
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    protected function hasIncludes(Request $request): bool
+    {
+        return is_null($this->includes) && !is_null($request->get('includes'));
+    }
+
+    /**
+     * @param string $item
+     */
+    protected function validator(string $item)
+    {
+        if (!in_array($item, $this->availableIncludes) && !in_array($item, $this->defaultIncludes)) {
+            throw InvalidIncludeException::init($item);
+        }
+    }
+
+    /**
+     * @param string $item
      * @return array
      */
-    protected function appendIncludes(Collection $includes, array $data, Request $request): array
+    protected function fetchIncludeAble(string $item): array
     {
-        $this->validateIncludes($includes);
-        foreach ($includes as $include) {
-            $data[$include] = $this->fetchIncludeAble($include, $request);
-        }
-        return $data;
+        $method = $this->qualifyIncludeAble($item);
+        /** @var array $result */
+        $result = $this->$method($this->resource);
+        return $result;
     }
 
     /**
-     * @param  Collection  $includes
-     */
-    public function validateIncludes(Collection $includes): void
-    {
-        $validIncludes = collect($this->availableIncludes);
-
-        $includes->each(function (string $item) use ($validIncludes) {
-            if (!$validIncludes->contains($item)) {
-                throw InvalidIncludeException::init($item);
-            }
-
-            $item1 = $this->qualifyIncludeAble($item);
-            $this->qualifiedIncludes->add($item1);
-        });
-    }
-
-    /**
-     * @param  string  $item
+     * @param string $item
      * @return string
      */
     protected function qualifyIncludeAble(string $item): string
     {
-        $camelCase = (string) Str::of($item)->camel();
+        $camelCase = (string)Str::of($item)->camel();
         return sprintf('include%s', ucfirst($camelCase));
-    }
-
-    /**
-     * @param  string  $item
-     * @param  Request  $request
-     * @return array
-     */
-    protected function fetchIncludeAble(string $item, Request $request): array
-    {
-        return [];
     }
 }
