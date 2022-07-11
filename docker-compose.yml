@@ -1,0 +1,14 @@
+services:
+  api:
+    container_name: dolphin_api
+    build:
+      context: ./
+      dockerfile: ./docker/jdk/Dockerfile
+    volumes:
+      - ./:/app
+      - ./.m2:/root/.m2
+    working_dir: /app
+    command: sh run.sh
+    ports:
+      - 8080:8080 # Application port
+      - 5005:5005 # Debugger port
