@@ -14,6 +14,8 @@ services:
     ports:
       - 8080:8080 # Application port
       - 5005:5005 # Debugger port
+    env_file:
+      - .env
 
   mongo:
     container_name: dolphin_mongo
@@ -26,6 +28,7 @@ services:
       - dolphin_network
     volumes:
       - dolphin-mongo:/data/db
+      - ./docker/mongo/:/docker-entrypoint-initdb.d/
     ports:
       - 27017:27017
 
