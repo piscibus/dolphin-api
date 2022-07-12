@@ -1,9 +1,11 @@
 services:
-  api:
-    container_name: dolphin_api
+  spring:
+    container_name: dolphin_spring
     build:
       context: ./
       dockerfile: ./docker/jdk/Dockerfile
+    networks:
+      - dolphin_network
     volumes:
       - ./:/app
       - ./.m2:/root/.m2
@@ -12,3 +14,25 @@ services:
     ports:
       - 8080:8080 # Application port
       - 5005:5005 # Debugger port
+
+  mongo:
+    container_name: dolphin_mongo
+    image: mongo:4.4.15
+    environment:
+      - 'MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}'
+      - 'MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}'
+      - 'MONGO_INITDB_DATABASE=${DB_DATABASE}'
+    networks:
+      - dolphin_network
+    volumes:
+      - dolphin-mongo:/data/db
+    ports:
+      - 27017:27017
+
+networks:
+  dolphin_network:
+    driver: bridge
+
+volumes:
+  dolphin-mongo:
+    driver: local
