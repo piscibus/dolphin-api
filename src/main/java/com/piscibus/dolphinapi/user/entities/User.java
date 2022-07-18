@@ -1,4 +1,4 @@
-package com.piscibus.dolphinapi.user;
+package com.piscibus.dolphinapi.user.entities;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
