@@ -38,7 +38,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        
+
         <!-- Third party packages-->
         <dependency>
             <groupId>com.google.code.gson</groupId>
