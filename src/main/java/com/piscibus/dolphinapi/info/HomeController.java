@@ -12,12 +12,12 @@ public class HomeController {
         return ResponseEntity.ok(new Dolphin());
     }
 
-    @RequestMapping(path = "/admin", method = {RequestMethod.GET})
+    @RequestMapping(path = "/api/v1/admin", method = {RequestMethod.GET})
     public ResponseEntity<String> admin() {
         return ResponseEntity.ok("<h1>Admin</h1>");
     }
 
-    @RequestMapping(path = "/user", method = {RequestMethod.GET})
+    @RequestMapping(path = "/api/v1/user", method = {RequestMethod.GET})
     public ResponseEntity<String> user() {
         return ResponseEntity.ok("<h1>User</h1>");
     }

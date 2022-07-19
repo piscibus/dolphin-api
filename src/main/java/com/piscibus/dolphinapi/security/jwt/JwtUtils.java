@@ -34,7 +34,7 @@ public class JwtUtils {
         return new Date(System.currentTimeMillis() + jwtExpirationMs);
     }
 
-    public String getUsernameFromToken(String token) {
+    public String getUserNameFromJwtToken(String token) {
         return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
@@ -42,7 +42,7 @@ public class JwtUtils {
                 .getSubject();
     }
 
-    public boolean isValidToken(String token) {
+    public boolean validateJwtToken(String token) {
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
