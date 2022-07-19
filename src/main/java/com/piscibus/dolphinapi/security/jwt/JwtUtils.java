@@ -14,13 +14,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JwtUtils {
-    public static final String TOKEN_PREFIX = "Bearer ";
-    public static final String AUTHORIZATION_HEADER = "Authorization";
-
-    private static Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     private final String secret = "secret";
-    private final int jwtExpirationMs = 3600000;
 
     public String generateToken(Authentication authentication) {
         DolphinUser user = (DolphinUser) authentication.getPrincipal();
@@ -34,6 +30,7 @@ public class JwtUtils {
     }
 
     private Date generateExpirationDate() {
+        int jwtExpirationMs = 3600000;
         return new Date(System.currentTimeMillis() + jwtExpirationMs);
     }
 
