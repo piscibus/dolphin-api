@@ -1,4 +1,13 @@
-package com.piscibus.dolphinapi.security;
+/**
+ * --------------------------------------------------------------------------------------------
+ * Application Security Configuration Adapter.
+ * --------------------------------------------------------------------------------------------
+ * This class is a Spring Security configuration adapter for the Dolphin application.
+ *
+ * @version 1.0
+ * @since 1.0
+ */
+package com.piscibus.dolphinapi.security.config;
 
 import com.piscibus.dolphinapi.security.jwt.AuthEntryPoint;
 import com.piscibus.dolphinapi.security.jwt.AuthTokenFilter;
@@ -14,33 +23,34 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    private UserDetailsService userDetailsService;
+public class AppSecurityConfigAdapter extends WebSecurityConfigurerAdapter {
+    private final UserDetailsService userDetailsService;
+    private final AuthEntryPoint authEntryPoint;
+    private final AuthTokenFilter authTokenFilter;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private AuthEntryPoint authEntryPoint;
-
-    @Bean
-    public AuthTokenFilter authTokenFilter() {
-        return new AuthTokenFilter();
+    public AppSecurityConfigAdapter(
+            UserDetailsService userDetailsService,
+            AuthEntryPoint authEntryPoint,
+            AuthTokenFilter authTokenFilter,
+            PasswordEncoder passwordEncoder
+    ) {
+        this.userDetailsService = userDetailsService;
+        this.authEntryPoint = authEntryPoint;
+        this.authTokenFilter = authTokenFilter;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
     @Bean
@@ -59,6 +69,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/api/v1/auth/**").permitAll()
                 .anyRequest().authenticated();
 
-        http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
