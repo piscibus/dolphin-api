@@ -2,6 +2,7 @@ package com.piscibus.dolphinapi.security.controllers;
 
 import com.piscibus.dolphinapi.security.jwt.AuthEntryPoint;
 import com.piscibus.dolphinapi.security.jwt.JwtUtils;
+import com.piscibus.dolphinapi.security.requests.LoginRequest;
 import com.piscibus.dolphinapi.security.requests.RegisterRequest;
 import com.piscibus.dolphinapi.user.entities.User;
 import com.piscibus.dolphinapi.user.repositories.RoleRepository;
@@ -10,6 +11,9 @@ import com.piscibus.dolphinapi.user.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,5 +57,17 @@ public class AuthController {
 
         // return response
         return ResponseEntity.ok().body("User registered successfully");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword());
+
+        Authentication authentication = authenticationManager.authenticate(authToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String jwt = jwtUtils.generateToken(authentication);
+
+        return ResponseEntity.ok("JWT " + jwt);
     }
 }

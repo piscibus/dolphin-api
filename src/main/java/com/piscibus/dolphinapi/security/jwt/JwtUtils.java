@@ -22,9 +22,9 @@ public class JwtUtils {
         DolphinUser user = (DolphinUser) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setSubject(user.getUsername())
+                .setSubject((user.getUsername()))
                 .setIssuedAt(new Date())
-                .setExpiration(generateExpirationDate())
+                .setExpiration(new Date((new Date()).getTime() + 86400000))
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
