@@ -1,3 +1,12 @@
+/**
+ * ----------------------------------------------------------------------------
+ * Registration Request
+ * ----------------------------------------------------------------------------
+ * This class is used to create and validate a new user.
+ *
+ * @version 1.0
+ * @since 1.0
+ */
 package com.piscibus.dolphinapi.security.requests;
 
 import org.springframework.stereotype.Service;
@@ -7,9 +16,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Service
-public class RegisterRequest {
-    @NotBlank
-    @Size(min = 3, max = 50)
+public class RegistrationRequest {
+    @NotBlank(message = "Username is required")
+    @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
     private String username;
 
     @NotBlank
@@ -24,7 +33,7 @@ public class RegisterRequest {
         return username;
     }
 
-    public RegisterRequest setUsername(String username) {
+    public RegistrationRequest setUsername(String username) {
         this.username = username;
         return this;
     }
@@ -33,7 +42,7 @@ public class RegisterRequest {
         return password;
     }
 
-    public RegisterRequest setPassword(String password) {
+    public RegistrationRequest setPassword(String password) {
         this.password = password;
         return this;
     }
@@ -42,7 +51,7 @@ public class RegisterRequest {
         return email;
     }
 
-    public RegisterRequest setEmail(String email) {
+    public RegistrationRequest setEmail(String email) {
         this.email = email;
         return this;
     }
