@@ -1,4 +1,15 @@
+/**
+ * ----------------------------------------------------------------------------
+ * User Entity
+ * ----------------------------------------------------------------------------
+ * This class is used to represent a user entity.
+ *
+ * @version 1.0
+ * @since 1.0
+ */
 package com.piscibus.dolphinapi.user.entities;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,6 +29,7 @@ public class User {
     private String username;
 
     @NotBlank(message = "Password is required")
+    @JsonIgnore
     private String password;
 
     @Email(message = "Email should be a valid email address")
